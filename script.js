@@ -1,308 +1,329 @@
-const puzzle = document.getElementById("puzzle");
-const musica = document.getElementById("musica");
-const declaracao = document.getElementById("declaracao");
-const texto = document.getElementById("textoDigitando");
-
-musica.style.display = "none";
-declaracao.style.display = "none";
-
-const correto = [
-    "0% 0%",
-    "50% 0%",
-    "100% 0%",
-    "0% 50%",
-    "50% 50%",
-    "100% 50%",
-    "0% 100%",
-    "50% 100%",
-    "100% 100%"
-];
-
 // ======================
-// Criar peças
+// ❤️ CONTADOR
 // ======================
 
-correto.forEach(pos => {
+// ALTERE PARA A DATA QUE VCS COMEÇARAM A NAMORAR
+const dataNamoro = new Date("2026-06-11T20:00:00");
 
-    const div = document.createElement("div");
+function atualizarContador() {
 
-    div.className = "piece";
+    const contador = document.getElementById("tempoJuntos");
 
-    div.style.backgroundPosition = pos;
+    if (!contador) return;
 
-    div.draggable = true;
+    const agora = new Date();
 
-    puzzle.appendChild(div);
+    let diff = agora - dataNamoro;
+
+    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    const horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
+
+    const minutos = Math.floor((diff / (1000 * 60)) % 60);
+
+    const segundos = Math.floor((diff / 1000) % 60);
+
+    const meses = Math.floor(dias / 30);
+
+    const restoDias = dias % 30;
+
+    contador.innerHTML = `
+        <strong>${meses}</strong> mês(es)<br>
+        <strong>${restoDias}</strong> dia(s)<br>
+        <strong>${horas}</strong> hora(s)<br>
+        <strong>${minutos}</strong> minuto(s)<br>
+        <strong>${segundos}</strong> segundo(s)
+    `;
+
+}
+
+setInterval(atualizarContador, 1000);
+atualizarContador();
+
+
+// ======================
+// 🎵 FADE DA MÚSICA
+// ======================
+
+function tocarMusicaSuave() {
+
+    musica.volume = 0;
+
+    musica.play().catch(() => {});
+
+    let volume = 0;
+
+    const fade = setInterval(() => {
+
+        volume += 0.02;
+
+        if (volume >= 1) {
+
+            volume = 1;
+
+            clearInterval(fade);
+
+        }
+
+        musica.volume = volume;
+
+    }, 120);
+
+}
+
+// ======================
+// 🌌 FUNDO ESTRELADO
+// ======================
+
+const canvasEstrelas = document.getElementById("estrelas");
+
+if (canvasEstrelas) {
+
+    const ctx = canvasEstrelas.getContext("2d");
+
+    function ajustarCanvas() {
+        canvasEstrelas.width = window.innerWidth;
+        canvasEstrelas.height = window.innerHeight;
+    }
+
+    ajustarCanvas();
+    window.addEventListener("resize", ajustarCanvas);
+
+    const estrelas = [];
+
+    for (let i = 0; i < 120; i++) {
+
+        estrelas.push({
+            x: Math.random() * canvasEstrelas.width,
+            y: Math.random() * canvasEstrelas.height,
+            r: Math.random() * 2 + 0.5,
+            a: Math.random(),
+            v: Math.random() * 0.02 + 0.005
+        });
+
+    }
+
+    function desenharEstrelas() {
+
+        ctx.clearRect(0, 0, canvasEstrelas.width, canvasEstrelas.height);
+
+        estrelas.forEach(e => {
+
+            e.a += e.v;
+
+            if (e.a >= 1 || e.a <= 0.2) {
+                e.v *= -1;
+            }
+
+            ctx.beginPath();
+            ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,255,255,${e.a})`;
+            ctx.fill();
+
+        });
+
+        requestAnimationFrame(desenharEstrelas);
+
+    }
+
+    desenharEstrelas();
+
+}
+
+// ======================
+// 💌 CORAÇÕES ESCONDIDOS
+// ======================
+
+document.querySelectorAll(".coracao-segredo").forEach(coracao => {
+
+    coracao.addEventListener("click", () => {
+
+        alert(coracao.dataset.msg);
+
+        coracao.style.transform = "scale(1.5)";
+
+        setTimeout(() => {
+            coracao.style.transform = "scale(1)";
+        }, 300);
+
+    });
 
 });
 
 // ======================
-// Embaralhar
+// 🤍 ABRIR MEU CORAÇÃO
 // ======================
 
-function embaralhar(){
+function mostrarBotaoCoracao() {
 
-    const pieces = document.querySelectorAll(".piece");
+    const abrir = document.getElementById("abrirCoracao");
 
-    let posicoes=[];
-
-    pieces.forEach(p=>{
-
-        posicoes.push(p.style.backgroundPosition);
-
-    });
-
-    for(let i=posicoes.length-1;i>0;i--){
-
-        const j=Math.floor(Math.random()*(i+1));
-
-        [posicoes[i],posicoes[j]]=[posicoes[j],posicoes[i]];
-
-    }
-
-    pieces.forEach((p,i)=>{
-
-        p.style.backgroundPosition=posicoes[i];
-
-    });
-
-}
-
-// ======================
-// Trocar
-// ======================
-
-function trocar(a,b){
-
-    let temp=a.style.backgroundPosition;
-
-    a.style.backgroundPosition=b.style.backgroundPosition;
-
-    b.style.backgroundPosition=temp;
-
-    verificar();
-
-}
-
-// ======================
-// Verificar
-// ======================
-
-function verificar(){
-
-    const pieces=document.querySelectorAll(".piece");
-
-    let ok=true;
-
-    pieces.forEach((p,i)=>{
-
-        if(p.style.backgroundPosition!==correto[i]){
-
-            ok=false;
-
-        }
-
-    });
-
-    if(ok){
-
-        finalizar();
-
+    if (abrir) {
+        abrir.style.display = "block";
     }
 
 }
 
-// ======================
-// Final
-// ======================
+const botao = document.getElementById("btnCoracao");
 
-function finalizar(){
+if (botao) {
 
-    criarCoracoes();
+    botao.addEventListener("click", () => {
 
-    declaracao.style.display="block";
+        document.getElementById("mensagemSurpresa").style.display = "block";
 
-    musica.style.display="block";
+        document.getElementById("pedido").style.display = "block";
 
-    musica.play().catch(()=>{});
+        botao.style.display = "none";
 
-    escreverTexto();
-
-    window.scrollTo({
-
-        top:document.body.scrollHeight,
-
-        behavior:"smooth"
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: "smooth"
+        });
 
     });
 
 }
 
 // ======================
-// Digitação
+// 💍 PEDIDO SIMBÓLICO
 // ======================
 
-function escreverTexto() {
+const btnPromessa = document.getElementById("btnPromessa");
 
-    const paragrafos = Array.from(texto.querySelectorAll("p"));
+if (btnPromessa) {
 
-    const textos = paragrafos.map(p => p.textContent);
+    let etapa = 0;
 
-    paragrafos.forEach(p => {
-        p.textContent = "";
-    });
+    btnPromessa.addEventListener("click", () => {
 
-    let indice = 0;
+        if (etapa === 0) {
 
-    function escreverParagrafo() {
+            document.getElementById("respostaPromessa").style.display = "block";
 
-        if (indice >= paragrafos.length) return;
+            btnPromessa.innerHTML = "❤️ Eu prometo";
 
-        const p = paragrafos[indice];
-        const conteudo = textos[indice];
+            etapa++;
 
-        let letra = 0;
-
-        const timer = setInterval(() => {
-
-            p.textContent += conteudo.charAt(letra);
-            letra++;
-
-            // Faz a tela acompanhar a escrita
             window.scrollTo({
                 top: document.body.scrollHeight,
                 behavior: "smooth"
             });
 
-            if (letra >= conteudo.length) {
+        } else {
 
-                clearInterval(timer);
+            document.getElementById("segundaResposta").style.display = "block";
 
-                indice++;
+            btnPromessa.style.display = "none";
 
-                setTimeout(escreverParagrafo, 800);
+            iniciarFinal();
 
-            }
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: "smooth"
+            });
 
-        }, 40);
-
-    }
-
-    escreverParagrafo();
-
-}
-
-
-// ======================
-// Corações
-// ======================
-
-function criarCoracoes(){
-
-    for(let i=0;i<40;i++){
-
-        const heart=document.createElement("div");
-
-        heart.className="heart";
-
-        heart.innerHTML="❤️";
-
-        heart.style.left=Math.random()*100+"vw";
-
-        heart.style.animationDuration=(3+Math.random()*2)+"s";
-
-        document.body.appendChild(heart);
-
-        setTimeout(()=>{
-
-            heart.remove();
-
-        },5000);
-
-    }
-
-}
-
-// ======================
-// Mouse
-// ======================
-
-let arrastando=null;
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-    const pieces=document.querySelectorAll(".piece");
-
-    pieces.forEach(piece=>{
-
-        piece.addEventListener("dragstart",()=>{
-
-            arrastando=piece;
-
-        });
-
-        piece.addEventListener("dragover",(e)=>{
-
-            e.preventDefault();
-
-        });
-
-        piece.addEventListener("drop",()=>{
-
-            if(arrastando && arrastando!==piece){
-
-                trocar(arrastando,piece);
-
-            }
-
-        });
-
-        // Mobile
-
-        piece.addEventListener("touchstart",()=>{
-
-            arrastando=piece;
-
-        });
-
-        piece.addEventListener("touchend",(e)=>{
-
-            const touch=e.changedTouches[0];
-
-            const alvo=document.elementFromPoint(touch.clientX,touch.clientY);
-
-            if(alvo && alvo.classList.contains("piece") && alvo!==arrastando){
-
-                trocar(arrastando,alvo);
-
-            }
-
-        });
+        }
 
     });
 
-});
+}
 
 // ======================
-// Começar
+// 🎬 FINAL CINEMATOGRÁFICO
 // ======================
 
-function comecar(){
+function iniciarFinal() {
 
-    document.getElementById("inicio").style.display="none";
+    const final = document.getElementById("finalCinema");
+    const frase = document.getElementById("fraseFinal");
 
-    document.getElementById("conteudo").style.display="block";
+    if (!final || !frase) return;
 
-    embaralhar();
+    const mensagens = [
+
+        "❤️ Esse foi só o nosso primeiro mês...",
+
+        "E eu já tenho ctz de uma coisa...",
+
+        "Qro viver todos os outros ao seu lado. ❤️",
+
+        "Eu te amo infinitamente, minha Vitorinha. ❤️"
+
+    ];
+
+    let indice = 0;
+
+    setTimeout(() => {
+
+        final.style.display = "flex";
+
+        mostrarMensagem();
+
+    }, 2500);
+
+    function mostrarMensagem() {
+
+        frase.style.opacity = "0";
+
+        setTimeout(() => {
+
+            frase.innerHTML = mensagens[indice];
+
+            frase.style.opacity = "1";
+
+            indice++;
+
+            if (indice < mensagens.length) {
+
+                setTimeout(mostrarMensagem, 2500);
+
+            } else {
+
+                chuvaFinal();
+
+            }
+
+        }, 500);
+
+    }
 
 }
 
 // ======================
-// Iniciar
+// ❤️ CHUVA FINAL
 // ======================
 
-window.onload=()=>{
+function chuvaFinal() {
 
-    embaralhar();
+    const intervalo = setInterval(() => {
 
-};
+        const heart = document.createElement("div");
+
+        heart.innerHTML = "❤️";
+
+        heart.className = "heart";
+
+        heart.style.left = Math.random() * 100 + "vw";
+
+        heart.style.fontSize = (20 + Math.random() * 20) + "px";
+
+        heart.style.animationDuration = (4 + Math.random() * 2) + "s";
+
+        document.body.appendChild(heart);
+
+        setTimeout(() => {
+
+            heart.remove();
+
+        }, 6000);
+
+    }, 250);
+
+    setTimeout(() => {
+
+        clearInterval(intervalo);
+
+    }, 10000);
+
+}

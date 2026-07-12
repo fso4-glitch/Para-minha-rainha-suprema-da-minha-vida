@@ -1,358 +1,253 @@
 /* ==========================
-   RESET
+   CONTADOR
 ========================== */
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+#contador{
+    margin:20px auto;
+    padding:15px;
+
+    max-width:320px;
+
+    background:rgba(255,255,255,.12);
+    backdrop-filter:blur(10px);
+
+    border-radius:20px;
+
+    font-size:17px;
+    line-height:1.7;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.2);
 }
 
-html{
-    scroll-behavior:smooth;
-}
+#tempoJuntos{
 
-body{
+    margin-top:10px;
 
-    font-family:Arial,Helvetica,sans-serif;
+    font-size:22px;
+
+    font-weight:bold;
+
     color:#fff;
-    text-align:center;
-    overflow-x:hidden;
-
-    background:linear-gradient(-45deg,#2a003f,#ff4da6,#ff85c1,#3a0ca3);
-    background-size:400% 400%;
-    animation:gradientBG 12s ease infinite;
 
 }
 
 /* ==========================
-   FUNDO
+   BOTÕES
 ========================== */
 
-@keyframes gradientBG{
+#btnCoracao,
+#btnPromessa{
+
+    margin-top:25px;
+
+    padding:15px 35px;
+
+    border:none;
+
+    border-radius:40px;
+
+    cursor:pointer;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    color:#ff4da6;
+
+    background:#fff;
+
+    transition:.3s;
+
+}
+
+#btnCoracao:hover,
+#btnPromessa:hover{
+
+    transform:scale(1.05);
+
+}
+
+/* ==========================
+   CORAÇÕES ESCONDIDOS
+========================== */
+
+.coracao-segredo{
+
+    position:fixed;
+
+    font-size:28px;
+
+    cursor:pointer;
+
+    animation:pulsar 2s infinite;
+
+    user-select:none;
+
+}
+
+.coracao-segredo:nth-child(1){
+
+    top:18%;
+    left:8%;
+
+}
+
+.coracao-segredo:nth-child(2){
+
+    top:58%;
+    right:8%;
+
+}
+
+.coracao-segredo:nth-child(3){
+
+    bottom:12%;
+    left:45%;
+
+}
+
+@keyframes pulsar{
 
 0%{
-background-position:0% 50%;
+transform:scale(1);
 }
 
 50%{
-background-position:100% 50%;
+transform:scale(1.2);
 }
 
 100%{
-background-position:0% 50%;
+transform:scale(1);
 }
 
 }
 
 /* ==========================
-   TELA INICIAL
+   FUNDO ESTRELADO
 ========================== */
 
-#inicio{
+#estrelas{
 
-position:fixed;
-top:0;
-left:0;
+    position:fixed;
 
-width:100%;
-height:100%;
+    top:0;
+    left:0;
 
-display:flex;
-justify-content:center;
-align-items:center;
+    width:100%;
+    height:100%;
 
-z-index:999;
+    pointer-events:none;
 
-background:inherit;
-
-}
-
-.card-inicio{
-
-width:90%;
-max-width:360px;
-
-padding:35px 25px;
-
-background:rgba(255,255,255,.12);
-
-backdrop-filter:blur(15px);
-
-border-radius:25px;
-
-box-shadow:0 15px 35px rgba(0,0,0,.35);
-
-animation:aparecer 1s;
-
-}
-
-.card-inicio h1{
-
-font-size:25px;
-margin-bottom:18px;
-
-}
-
-.card-inicio p{
-
-font-size:16px;
-line-height:1.6;
-
-}
-
-.card-inicio button{
-
-margin-top:28px;
-
-padding:14px 35px;
-
-border:none;
-border-radius:30px;
-
-font-size:17px;
-font-weight:bold;
-
-cursor:pointer;
-
-background:#fff;
-color:#ff4da6;
-
-transition:.3s;
-
-}
-
-.card-inicio button:hover{
-
-transform:scale(1.05);
+    z-index:-1;
 
 }
 
 /* ==========================
-   CONTEÚDO
+   FINAL CINEMATOGRÁFICO
 ========================== */
 
-#conteudo{
+#finalCinema{
 
-display:none;
+    position:fixed;
 
-padding:30px 15px 50px;
+    top:0;
+    left:0;
 
-animation:aparecer .8s;
+    width:100%;
+    height:100%;
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    flex-direction:column;
+
+    background:rgba(0,0,0,.85);
+
+    z-index:9999;
+
+    animation:fadeIn 1s;
 
 }
 
-h1{
+#fraseFinal{
 
-font-size:30px;
+    max-width:700px;
 
-margin-bottom:18px;
+    padding:20px;
 
-}
+    font-size:30px;
 
-.texto{
+    line-height:1.6;
 
-max-width:500px;
+    color:#fff;
 
-margin:auto;
+    text-shadow:0 0 20px rgba(255,255,255,.5);
 
-font-size:17px;
-
-line-height:1.7;
-
-margin-bottom:25px;
+    animation:brilho 2s infinite alternate;
 
 }
 
 /* ==========================
-   PUZZLE
+   MENSAGENS
 ========================== */
 
-#puzzle{
+#mensagemSurpresa,
+#respostaPromessa,
+#segundaResposta{
 
-width:92vw;
-height:92vw;
+    margin-top:30px;
 
-max-width:360px;
-max-height:360px;
-
-margin:25px auto;
-
-display:grid;
-
-grid-template-columns:repeat(3,1fr);
-
-border-radius:18px;
-
-overflow:hidden;
-
-box-shadow:0 10px 25px rgba(0,0,0,.35);
+    animation:aparecer 1s;
 
 }
 
-.piece{
+#mensagemSurpresa p,
+#respostaPromessa p,
+#segundaResposta p{
 
-border:1px solid rgba(255,255,255,.25);
+    font-size:19px;
 
-background-image:url("../foto.jpg");
-
-background-size:300% 300%;
-
-cursor:pointer;
-
-transition:.25s;
-
-touch-action:none;
-
-}
-
-.piece:hover{
-
-transform:scale(.98);
-
-}
-
-/* ==========================
-   MÚSICA
-========================== */
-
-#musica{
-
-display:none;
-
-margin:30px auto;
-
-width:95%;
-max-width:350px;
-
-}
-
-/* ==========================
-   DECLARAÇÃO
-========================== */
-
-#declaracao{
-
-display:none;
-
-margin-top:35px;
-
-animation:aparecer 1s;
-
-}
-
-#declaracao h2{
-
-font-size:26px;
-
-margin-bottom:25px;
-
-}
-
-.texto-amor{
-    max-width:650px;
-    margin:auto;
-    font-size:18px;
     line-height:1.8;
-    padding:0 10px;
-    white-space:normal;
-}
-
-.texto-amor p{
-    margin:0 0 18px;
-}
-
-.musica-frase{
-
-margin-top:40px;
-
-font-size:18px;
-
-color:#ffd6ec;
-
-padding-bottom:40px;
 
 }
 
 /* ==========================
-   CORAÇÕES
+   BRILHO
 ========================== */
 
-.heart{
+@keyframes brilho{
 
-position:fixed;
+    from{
 
-bottom:-30px;
+        opacity:.8;
+        transform:scale(1);
 
-font-size:24px;
+    }
 
-pointer-events:none;
+    to{
 
-animation:subir linear forwards;
+        opacity:1;
+        transform:scale(1.03);
 
-z-index:999;
-
-}
-
-@keyframes subir{
-
-0%{
-
-transform:translateY(0) scale(.8);
-
-opacity:1;
+    }
 
 }
 
-100%{
+@keyframes fadeIn{
 
-transform:translateY(-120vh) scale(1.5);
+    from{
 
-opacity:0;
+        opacity:0;
 
-}
+    }
 
-}
+    to{
 
-/* ==========================
-   CONFETE
-========================== */
+        opacity:1;
 
-#confete{
-
-position:fixed;
-
-top:0;
-left:0;
-
-width:100%;
-height:100%;
-
-pointer-events:none;
-
-display:none;
-
-}
-
-/* ==========================
-   ANIMAÇÕES
-========================== */
-
-@keyframes aparecer{
-
-from{
-
-opacity:0;
-transform:translateY(20px);
-
-}
-
-to{
-
-opacity:1;
-transform:translateY(0);
-
-}
+    }
 
 }
 
@@ -362,36 +257,33 @@ transform:translateY(0);
 
 @media(max-width:480px){
 
-h1{
+    #contador{
 
-font-size:24px;
+        font-size:15px;
 
-}
+    }
 
-.texto{
+    #tempoJuntos{
 
-font-size:16px;
+        font-size:20px;
 
-}
+    }
 
-.texto-amor{
+    #fraseFinal{
 
-font-size:17px;
+        font-size:24px;
 
-line-height:1.8;
+        padding:25px;
 
-}
+    }
 
-.card-inicio h1{
+    #btnCoracao,
+    #btnPromessa{
 
-font-size:22px;
+        width:90%;
 
-}
+        font-size:16px;
 
-.card-inicio p{
-
-font-size:15px;
-
-}
+    }
 
 }
