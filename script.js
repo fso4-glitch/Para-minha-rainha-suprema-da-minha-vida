@@ -184,7 +184,7 @@ function escreverTexto() {
 
             }
 
-        }, 25);
+        }, 40);
 
     }
 
