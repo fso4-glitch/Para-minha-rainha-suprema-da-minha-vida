@@ -146,10 +146,8 @@ function escreverTexto() {
 
     const paragrafos = Array.from(texto.querySelectorAll("p"));
 
-    // Salva o texto de cada parágrafo
     const textos = paragrafos.map(p => p.textContent);
 
-    // Limpa todos
     paragrafos.forEach(p => {
         p.textContent = "";
     });
@@ -170,13 +168,18 @@ function escreverTexto() {
             p.textContent += conteudo.charAt(letra);
             letra++;
 
+            // Faz a tela acompanhar a escrita
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: "smooth"
+            });
+
             if (letra >= conteudo.length) {
 
                 clearInterval(timer);
 
                 indice++;
 
-                // espera um pouquinho antes do próximo parágrafo
                 setTimeout(escreverParagrafo, 300);
 
             }
@@ -188,6 +191,7 @@ function escreverTexto() {
     escreverParagrafo();
 
 }
+
 
 // ======================
 // Corações
