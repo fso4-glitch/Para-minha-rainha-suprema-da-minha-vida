@@ -1,149 +1,281 @@
-const inicio = document.getElementById("inicio");
-const jogo = document.getElementById("jogo");
-const final = document.getElementById("final");
-
-const btnComecar = document.getElementById("btnComecar");
 const puzzle = document.getElementById("puzzle");
 const musica = document.getElementById("musica");
+const declaracao = document.getElementById("declaracao");
+const texto = document.getElementById("textoDigitando");
 
-const tamanho = 3;
-let pecas = [];
-let selecionada = null;
+musica.style.display = "none";
+declaracao.style.display = "none";
 
-btnComecar.addEventListener("click", () => {
-    inicio.classList.add("oculto");
-    jogo.classList.remove("oculto");
+const correto = [
+    "0% 0%",
+    "50% 0%",
+    "100% 0%",
+    "0% 50%",
+    "50% 50%",
+    "100% 50%",
+    "0% 100%",
+    "50% 100%",
+    "100% 100%"
+];
 
-    criarPuzzle();
+// ======================
+// Criar peças
+// ======================
+
+correto.forEach(pos => {
+
+    const div = document.createElement("div");
+
+    div.className = "piece";
+
+    div.style.backgroundPosition = pos;
+
+    div.draggable = true;
+
+    puzzle.appendChild(div);
+
 });
 
-function criarPuzzle(){
-
-    puzzle.innerHTML = "";
-    pecas = [];
-
-    for(let i=0;i<9;i++){
-
-        pecas.push(i);
-
-    }
-
-    embaralhar();
-
-    desenhar();
-
-}
+// ======================
+// Embaralhar
+// ======================
 
 function embaralhar(){
 
-    for(let i=pecas.length-1;i>0;i--){
+    const pieces = document.querySelectorAll(".piece");
 
-        let j = Math.floor(Math.random()*(i+1));
+    let posicoes=[];
 
-        [pecas[i],pecas[j]]=[pecas[j],pecas[i]];
+    pieces.forEach(p=>{
+
+        posicoes.push(p.style.backgroundPosition);
+
+    });
+
+    for(let i=posicoes.length-1;i>0;i--){
+
+        const j=Math.floor(Math.random()*(i+1));
+
+        [posicoes[i],posicoes[j]]=[posicoes[j],posicoes[i]];
 
     }
 
-}
+    pieces.forEach((p,i)=>{
 
-function desenhar(){
-
-    puzzle.innerHTML="";
-
-    pecas.forEach((valor,posicao)=>{
-
-        const div=document.createElement("div");
-
-        div.className="peca";
-
-        let x=(valor%3)*50;
-        let y=Math.floor(valor/3)*50;
-
-        div.style.backgroundImage="url('foto.jpg')";
-        div.style.backgroundPosition=`${x}% ${y}%`;
-
-        div.onclick=()=>clicou(posicao);
-
-        puzzle.appendChild(div);
+        p.style.backgroundPosition=posicoes[i];
 
     });
 
 }
 
-function clicou(posicao){
+// ======================
+// Trocar
+// ======================
 
-    if(selecionada===null){
+function trocar(a,b){
 
-        selecionada=posicao;
+    let temp=a.style.backgroundPosition;
 
-        puzzle.children[posicao].style.border="4px solid yellow";
+    a.style.backgroundPosition=b.style.backgroundPosition;
 
-        return;
-
-    }
-
-    [pecas[selecionada],pecas[posicao]]=[pecas[posicao],pecas[selecionada]];
-
-    selecionada=null;
-
-    desenhar();
+    b.style.backgroundPosition=temp;
 
     verificar();
 
 }
 
+// ======================
+// Verificar
+// ======================
+
 function verificar(){
 
-    for(let i=0;i<9;i++){
+    const pieces=document.querySelectorAll(".piece");
 
-        if(pecas[i]!=i){
+    let ok=true;
 
-            return;
+    pieces.forEach((p,i)=>{
+
+        if(p.style.backgroundPosition!==correto[i]){
+
+            ok=false;
 
         }
 
+    });
+
+    if(ok){
+
+        finalizar();
+
     }
 
-    terminou();
+}
+
+// ======================
+// Final
+// ======================
+
+function finalizar(){
+
+    criarCoracoes();
+
+    declaracao.style.display="block";
+
+    musica.style.display="block";
+
+    musica.play().catch(()=>{});
+
+    escreverTexto();
+
+    window.scrollTo({
+
+        top:document.body.scrollHeight,
+
+        behavior:"smooth"
+
+    });
 
 }
 
-function terminou(){
+// ======================
+// Digitação
+// ======================
 
-    jogo.classList.add("oculto");
+function escreverTexto(){
 
-    final.classList.remove("oculto");
+    const completo=texto.innerText;
 
-    musica.play();
+    texto.innerHTML="";
 
-    chuvaCoracoes();
+    let i=0;
+
+    const timer=setInterval(()=>{
+
+        texto.innerHTML+=completo.charAt(i);
+
+        i++;
+
+        if(i>=completo.length){
+
+            clearInterval(timer);
+
+        }
+
+    },28);
 
 }
 
-function chuvaCoracoes(){
+// ======================
+// Corações
+// ======================
 
-    setInterval(()=>{
+function criarCoracoes(){
 
-        const c=document.createElement("div");
+    for(let i=0;i<40;i++){
 
-        c.className="coracao";
+        const heart=document.createElement("div");
 
-        c.innerHTML="❤️";
+        heart.className="heart";
 
-        c.style.left=Math.random()*100+"vw";
+        heart.innerHTML="❤️";
 
-        c.style.bottom="-20px";
+        heart.style.left=Math.random()*100+"vw";
 
-        c.style.fontSize=(20+Math.random()*40)+"px";
+        heart.style.animationDuration=(3+Math.random()*2)+"s";
 
-        document.body.appendChild(c);
+        document.body.appendChild(heart);
 
         setTimeout(()=>{
 
-            c.remove();
+            heart.remove();
 
         },5000);
 
-    },250);
+    }
 
 }
+
+// ======================
+// Mouse
+// ======================
+
+let arrastando=null;
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    const pieces=document.querySelectorAll(".piece");
+
+    pieces.forEach(piece=>{
+
+        piece.addEventListener("dragstart",()=>{
+
+            arrastando=piece;
+
+        });
+
+        piece.addEventListener("dragover",(e)=>{
+
+            e.preventDefault();
+
+        });
+
+        piece.addEventListener("drop",()=>{
+
+            if(arrastando && arrastando!==piece){
+
+                trocar(arrastando,piece);
+
+            }
+
+        });
+
+        // Mobile
+
+        piece.addEventListener("touchstart",()=>{
+
+            arrastando=piece;
+
+        });
+
+        piece.addEventListener("touchend",(e)=>{
+
+            const touch=e.changedTouches[0];
+
+            const alvo=document.elementFromPoint(touch.clientX,touch.clientY);
+
+            if(alvo && alvo.classList.contains("piece") && alvo!==arrastando){
+
+                trocar(arrastando,alvo);
+
+            }
+
+        });
+
+    });
+
+});
+
+// ======================
+// Começar
+// ======================
+
+function comecar(){
+
+    document.getElementById("inicio").style.display="none";
+
+    document.getElementById("conteudo").style.display="block";
+
+    embaralhar();
+
+}
+
+// ======================
+// Iniciar
+// ======================
+
+window.onload=()=>{
+
+    embaralhar();
+
+};
