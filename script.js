@@ -144,24 +144,48 @@ function finalizar(){
 
 function escreverTexto() {
 
-    const paragrafos = texto.querySelectorAll("p");
+    const paragrafos = Array.from(texto.querySelectorAll("p"));
 
+    // Salva o texto de cada parágrafo
+    const textos = paragrafos.map(p => p.textContent);
+
+    // Limpa todos
     paragrafos.forEach(p => {
-        const conteudo = p.innerHTML;
-        p.innerHTML = "";
-        p.style.display = "block";
+        p.textContent = "";
+    });
 
-        let i = 0;
+    let indice = 0;
+
+    function escreverParagrafo() {
+
+        if (indice >= paragrafos.length) return;
+
+        const p = paragrafos[indice];
+        const conteudo = textos[indice];
+
+        let letra = 0;
 
         const timer = setInterval(() => {
-            p.innerHTML = conteudo.substring(0, i);
-            i++;
 
-            if (i > conteudo.length) {
+            p.textContent += conteudo.charAt(letra);
+            letra++;
+
+            if (letra >= conteudo.length) {
+
                 clearInterval(timer);
+
+                indice++;
+
+                // espera um pouquinho antes do próximo parágrafo
+                setTimeout(escreverParagrafo, 300);
+
             }
-        }, 20);
-    });
+
+        }, 25);
+
+    }
+
+    escreverParagrafo();
 
 }
 
