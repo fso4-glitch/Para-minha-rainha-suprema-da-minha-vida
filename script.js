@@ -626,5 +626,3 @@ function chuvaFinal() {
     }, 10000);
 
 }
-
-alert("Script carregou!");
