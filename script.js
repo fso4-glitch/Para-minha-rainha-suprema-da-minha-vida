@@ -144,25 +144,13 @@ function finalizar(){
 
 function escreverTexto(){
 
-    const completo=texto.innerText;
+    // Mantém a formatação da carta
+    texto.style.opacity = "0";
 
-    texto.innerHTML="";
-
-    let i=0;
-
-    const timer=setInterval(()=>{
-
-        texto.innerHTML+=completo.charAt(i);
-
-        i++;
-
-        if(i>=completo.length){
-
-            clearInterval(timer);
-
-        }
-
-    },28);
+    setTimeout(() => {
+        texto.style.transition = "opacity 1.2s ease";
+        texto.style.opacity = "1";
+    }, 100);
 
 }
 
