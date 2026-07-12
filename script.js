@@ -180,11 +180,11 @@ function escreverTexto() {
 
                 indice++;
 
-                setTimeout(escreverParagrafo, 300);
+                setTimeout(escreverParagrafo, 800);
 
             }
 
-        }, 60);
+        }, 40);
 
     }
 
