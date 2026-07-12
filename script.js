@@ -627,7 +627,4 @@ function chuvaFinal() {
 
 }
 
-function comecar() {
-    document.getElementById("inicio").style.display = "none";
-    document.getElementById("conteudo").style.display = "block";
-}
+alert("Script carregou!");
