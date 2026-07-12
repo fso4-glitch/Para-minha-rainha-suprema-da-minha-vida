@@ -18,164 +18,212 @@ const correto = [
     "100% 100%"
 ];
 
+// ======================
 // Criar peças
+// ======================
+
 correto.forEach(pos => {
+
     const div = document.createElement("div");
+
     div.className = "piece";
+
     div.style.backgroundPosition = pos;
+
     div.draggable = true;
+
     puzzle.appendChild(div);
+
 });
 
+// ======================
 // Embaralhar
-function embaralhar() {
+// ======================
+
+function embaralhar(){
+
     const pieces = document.querySelectorAll(".piece");
-    let posicoes = [];
 
-    pieces.forEach(p => posicoes.push(p.style.backgroundPosition));
+    let posicoes=[];
 
-    for (let i = posicoes.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [posicoes[i], posicoes[j]] = [posicoes[j], posicoes[i]];
+    pieces.forEach(p=>{
+
+        posicoes.push(p.style.backgroundPosition);
+
+    });
+
+    for(let i=posicoes.length-1;i>0;i--){
+
+        const j=Math.floor(Math.random()*(i+1));
+
+        [posicoes[i],posicoes[j]]=[posicoes[j],posicoes[i]];
+
     }
 
-    pieces.forEach((p, i) => {
-        p.style.backgroundPosition = posicoes[i];
+    pieces.forEach((p,i)=>{
+
+        p.style.backgroundPosition=posicoes[i];
+
     });
+
 }
 
+// ======================
 // Trocar
-function trocar(a, b) {
-    let temp = a.style.backgroundPosition;
-    a.style.backgroundPosition = b.style.backgroundPosition;
-    b.style.backgroundPosition = temp;
+// ======================
+
+function trocar(a,b){
+
+    let temp=a.style.backgroundPosition;
+
+    a.style.backgroundPosition=b.style.backgroundPosition;
+
+    b.style.backgroundPosition=temp;
+
     verificar();
+
 }
 
+// ======================
 // Verificar
-function verificar() {
-    const pieces = document.querySelectorAll(".piece");
-    let ok = true;
+// ======================
 
-    pieces.forEach((p, i) => {
-        if (p.style.backgroundPosition !== correto[i]) ok = false;
+function verificar(){
+
+    const pieces=document.querySelectorAll(".piece");
+
+    let ok=true;
+
+    pieces.forEach((p,i)=>{
+
+        if(p.style.backgroundPosition!==correto[i]){
+
+            ok=false;
+
+        }
+
     });
 
-    if (ok) finalizar();
+    if(ok){
+
+        finalizar();
+
+    }
+
 }
 
+// ======================
 // Final
-function finalizar() {
+// ======================
+
+function finalizar(){
+
     criarCoracoes();
 
-    declaracao.style.display = "block";
-    musica.style.display = "block";
+    declaracao.style.display="block";
 
-    musica.play().catch(() => {});
+    musica.style.display="block";
+
+    musica.play().catch(()=>{});
 
     escreverTexto();
 
     window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth"
+
+        top:document.body.scrollHeight,
+
+        behavior:"smooth"
+
     });
+
 }
 
-// NOVA FUNÇÃO DE DIGITAÇÃO (mantém os <p>)
+// ======================
+// Digitação
+// ======================
+
 function escreverTexto() {
 
-    const paragrafos = Array.from(texto.querySelectorAll("p"));
+    const paragrafos = texto.querySelectorAll("p");
 
     paragrafos.forEach(p => {
-        p.dataset.original = p.innerHTML;
+        const conteudo = p.innerHTML;
         p.innerHTML = "";
-        p.style.display = "none";
-    });
-
-    let indice = 0;
-
-    function escreverParagrafo() {
-
-        if (indice >= paragrafos.length) return;
-
-        const p = paragrafos[indice];
-        const original = p.dataset.original;
-
         p.style.display = "block";
 
         let i = 0;
 
         const timer = setInterval(() => {
-
-            p.innerHTML = original.substring(0, i);
-
+            p.innerHTML = conteudo.substring(0, i);
             i++;
 
-            if (i > original.length) {
+            if (i > conteudo.length) {
                 clearInterval(timer);
-                indice++;
-                setTimeout(escreverParagrafo, 250);
             }
-
-        }, 25);
-
-    }
-
-    escreverParagrafo();
+        }, 20);
+    });
 
 }
 
-P// ======================
+// ======================
 // Corações
 // ======================
 
-function criarCoracoes() {
+function criarCoracoes(){
 
-    for (let i = 0; i < 40; i++) {
+    for(let i=0;i<40;i++){
 
-        const heart = document.createElement("div");
+        const heart=document.createElement("div");
 
-        heart.className = "heart";
-        heart.innerHTML = "❤️";
+        heart.className="heart";
 
-        heart.style.left = Math.random() * 100 + "vw";
-        heart.style.animationDuration = (3 + Math.random() * 2) + "s";
+        heart.innerHTML="❤️";
+
+        heart.style.left=Math.random()*100+"vw";
+
+        heart.style.animationDuration=(3+Math.random()*2)+"s";
 
         document.body.appendChild(heart);
 
-        setTimeout(() => {
+        setTimeout(()=>{
+
             heart.remove();
-        }, 5000);
+
+        },5000);
 
     }
 
 }
 
 // ======================
-// Mouse + Mobile
+// Mouse
 // ======================
 
-let arrastando = null;
+let arrastando=null;
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded",()=>{
 
-    const pieces = document.querySelectorAll(".piece");
+    const pieces=document.querySelectorAll(".piece");
 
-    pieces.forEach(piece => {
+    pieces.forEach(piece=>{
 
-        piece.addEventListener("dragstart", () => {
-            arrastando = piece;
+        piece.addEventListener("dragstart",()=>{
+
+            arrastando=piece;
+
         });
 
-        piece.addEventListener("dragover", (e) => {
+        piece.addEventListener("dragover",(e)=>{
+
             e.preventDefault();
+
         });
 
-        piece.addEventListener("drop", () => {
+        piece.addEventListener("drop",()=>{
 
-            if (arrastando && arrastando !== piece) {
+            if(arrastando && arrastando!==piece){
 
-                trocar(arrastando, piece);
+                trocar(arrastando,piece);
 
             }
 
@@ -183,28 +231,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Mobile
 
-        piece.addEventListener("touchstart", () => {
+        piece.addEventListener("touchstart",()=>{
 
-            arrastando = piece;
+            arrastando=piece;
 
         });
 
-        piece.addEventListener("touchend", (e) => {
+        piece.addEventListener("touchend",(e)=>{
 
-            const touch = e.changedTouches[0];
+            const touch=e.changedTouches[0];
 
-            const alvo = document.elementFromPoint(
-                touch.clientX,
-                touch.clientY
-            );
+            const alvo=document.elementFromPoint(touch.clientX,touch.clientY);
 
-            if (
-                alvo &&
-                alvo.classList.contains("piece") &&
-                alvo !== arrastando
-            ) {
+            if(alvo && alvo.classList.contains("piece") && alvo!==arrastando){
 
-                trocar(arrastando, alvo);
+                trocar(arrastando,alvo);
 
             }
 
@@ -218,10 +259,11 @@ document.addEventListener("DOMContentLoaded", () => {
 // Começar
 // ======================
 
-function comecar() {
+function comecar(){
 
-    document.getElementById("inicio").style.display = "none";
-    document.getElementById("conteudo").style.display = "block";
+    document.getElementById("inicio").style.display="none";
+
+    document.getElementById("conteudo").style.display="block";
 
     embaralhar();
 
@@ -231,7 +273,7 @@ function comecar() {
 // Iniciar
 // ======================
 
-window.onload = () => {
+window.onload=()=>{
 
     embaralhar();
 
